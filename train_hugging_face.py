@@ -40,6 +40,7 @@ if __name__ == "__main__":
     df_train, df_val, df_test = np.split(
         df.sample(frac=1, random_state=42), [int(0.8 * len(df)), int(0.9 * len(df))]
     )
+
     hg_train_data = Dataset.from_pandas(df_train)
     hg_eval_data = Dataset.from_pandas(df_val)
     hg_test_data = Dataset.from_pandas(df_test)
@@ -60,14 +61,13 @@ if __name__ == "__main__":
     eval_dataset.set_format("torch")
     test_dataset.set_format("torch")
 
-    
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=4)
-    
+
     optimizer = AdamW(model.parameters(), lr=1e-5)
     lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1)
-    
+
     training_args = TrainingArguments(
-        output_dir="test_trainer", 
+        output_dir="test_trainer",
         evaluation_strategy="epoch",
         per_device_train_batch_size=16,
         per_device_eval_batch_size=8,
